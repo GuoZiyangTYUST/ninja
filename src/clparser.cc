@@ -114,9 +114,32 @@ bool CLParser::Parse(const string& output, const string& deps_prefix,
       // Drop it.
       // TODO: if we support compiling multiple output files in a single
       // cl.exe invocation, we should stash the filename.
-    } else {
-      filtered_output->append(line);
-      filtered_output->append("\n");
+    }
+    else 
+    {
+      static const uint8_t PrefixInChiness[]={215,162,210,226,58,32,176,252,186,172,206,196,188,254,58}; //注意: 包含文件: 的GBK 十进制编码
+      static const int prefixsize=sizeof(PrefixInChiness);
+
+      if(line.size()>prefixsize)
+      {
+        bool Match=true;
+        for(int i=0;i<prefixsize;i++)
+        {
+          if((uint8_t)line[i] !=PrefixInChiness[i])
+          {
+            Match=false;
+            break;
+          }
+        }
+      
+
+        if(!Match)
+        {
+            filtered_output->append(line);
+            filtered_output->append("\n");
+        }
+      }
+
     }
 
     if (end < output.size() && output[end] == '\r')
